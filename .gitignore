@@ -1,6 +1,13 @@
 .gradle
 /build/
 
+# IntelliJ idea files
+*.iml
+.idea/**
+.idea
+.idea/*
+.idea/vcs.xml
+gradle
 # Ignore Gradle GUI config
 gradle-app.setting
 
@@ -12,3 +19,17 @@ gradle-app.setting
 
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
+
+.DS_Store
+/*.launch
+/*.tmproj
+# logs
+/target/**
+/target-eclipse/**
+/plugins/
+.settings
+.project
+/out/**
+/out
+.idea/
+*.txt~
