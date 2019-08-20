@@ -3,7 +3,7 @@ import ui.widgets.Window
 
 class Main {
 	static void main(String[] args) {
-		Window mainFrame = new SwingWindow('./assets/f91w-watch')
+		Window mainFrame = new SwingWindow()
 		mainFrame.show()
 	}
 }

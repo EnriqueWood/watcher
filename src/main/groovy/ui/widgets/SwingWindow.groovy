@@ -1,6 +1,7 @@
 package ui.widgets
 
 import drawing.Dimension
+import drawing.Helper
 import drawing.IWatchSpecification
 import drawing.PaintingCanvas
 import drawing.SwingPaintingCanvas
@@ -11,20 +12,14 @@ import java.awt.Graphics
 
 class SwingWindow implements Window {
 
-	public static final int TICK_PERDIOD_IN_MILLIS = 100
+	public static final int TICK_PERIOD_IN_MILLIS = 100
 	JFrame frame
 	PaintingCanvas paintingCanvas
 	Timer tickTimer
+	File widgetFolder
 
-	SwingWindow(String speficationFolderPath) {
-		IWatchSpecification watchSpecification = ResourceLoader.parseSpecification(speficationFolderPath)
-		initFrame(watchSpecification.dimension)
-		paintingCanvas = new SwingPaintingCanvas(frame, frame.width, frame.height)
-		paintingCanvas.addScreens(watchSpecification.screens)
-		paintingCanvas.updateScreens(true)
-		paintingCanvas.paint()
-		paintingCanvas.show()
-		this.tickTimer = scheduleTickAndRepaint()
+	SwingWindow() {
+		this.widgetFolder = Helper.widgetFolder
 	}
 
 	void initFrame(Dimension dimension = new Dimension(INITIAL_DIMENSIONS.width as int, INITIAL_DIMENSIONS.height as int)) {
@@ -42,7 +37,7 @@ class SwingWindow implements Window {
 
 	protected Timer scheduleTickAndRepaint() {
 		Timer timer = new Timer('tickAndRepaint', true)
-		timer.scheduleAtFixedRate(tickAndRepaintTask(), TICK_PERDIOD_IN_MILLIS, TICK_PERDIOD_IN_MILLIS)
+		timer.scheduleAtFixedRate(tickAndRepaintTask(), TICK_PERIOD_IN_MILLIS, TICK_PERIOD_IN_MILLIS)
 		timer
 	}
 
@@ -60,7 +55,20 @@ class SwingWindow implements Window {
 	}
 
 	void show() {
+		IWatchSpecification watchSpecification = ResourceLoader.parseSpecification(specificationFolderPath)
+		initFrame(watchSpecification.dimension)
+		paintingCanvas = new SwingPaintingCanvas(frame, frame.width, frame.height)
+		paintingCanvas.addScreens(watchSpecification.screens)
+		paintingCanvas.updateScreens(true)
+		paintingCanvas.paint()
+		paintingCanvas.show()
+		this.tickTimer = scheduleTickAndRepaint()
 		frame.setVisible(true)
+	}
+
+	@Override
+	String getSpecificationFolderPath() {
+		widgetFolder.path
 	}
 
 	void hide() {

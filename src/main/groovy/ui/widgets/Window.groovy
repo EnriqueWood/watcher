@@ -4,15 +4,21 @@ import drawing.Dimension
 
 interface Window {
 
-	static final String WINDOW_TITLE = 'Watcher 0.1'
+	String WINDOW_TITLE = 'Watcher 0.1'
 
-	static final Dimension INITIAL_DIMENSIONS = new Dimension(640, 800)
+	Dimension INITIAL_DIMENSIONS = new Dimension(640, 800)
 
-	static final Location INITIAL_LOCATION = new Location(2, 200)
+	Location INITIAL_LOCATION = new Location(2, 200)
+
+	File DEFAULT_WIDGETS_FOLDER = new File('./assets')
+
+	File DEFAULT_INITIAL_FOLDER = new File('.')
 
 	void show()
 
 	void hide()
 
 	void close()
+
+	String getSpecificationFolderPath()
 }
