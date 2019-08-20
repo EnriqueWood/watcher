@@ -6,6 +6,8 @@ interface ILayer {
 
 	boolean isVisible()
 
+	int getOpacity()
+
 	void addDrawable(Drawable drawable)
 
 	void addDrawables(List<Drawable> drawables)

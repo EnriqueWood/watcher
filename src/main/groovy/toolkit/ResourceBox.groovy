@@ -4,29 +4,29 @@ import java.awt.Font
 import java.awt.image.BufferedImage
 
 class ResourceBox {
-	Map<String, Resource> resources
+	Map<String, Asset> assets
 
 	ResourceBox() {
-		this.resources = [:]
+		this.assets = [:]
 	}
 
-	void addResource(Resource resource) {
-		resources[resource.name] = resource
+	void addResource(Asset resource) {
+		assets[resource.name] = resource
 	}
 
-	void addAllResources(List<Resource> resources) {
-		resources.each { addResource(it) }
+	void addAllAssets(List<Asset> assets) {
+		assets.each { addResource(it) }
 	}
 
-	Resource getResource(String name) {
-		resources[name]
+	Asset getAsset(String name) {
+		assets[name]
 	}
 
 	BufferedImage getImage(String name) {
-		resources[name].resource as BufferedImage
+		assets[name].resource as BufferedImage
 	}
 
 	Font getFont(String name, float size = 12f) {
-		(resources[name].resource as Font).deriveFont(size)
+		(assets[name].resource as Font).deriveFont(size)
 	}
 }

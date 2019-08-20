@@ -1,12 +1,13 @@
 package ui.widgets
 
+import drawing.Dimension
+import drawing.IWatchSpecification
 import drawing.PaintingCanvas
 import drawing.SwingPaintingCanvas
 import toolkit.ResourceLoader
 
 import javax.swing.JFrame
 import java.awt.Graphics
-import java.awt.Rectangle
 
 class SwingWindow implements Window {
 
@@ -16,24 +17,25 @@ class SwingWindow implements Window {
 	Timer tickTimer
 
 	SwingWindow() {
-		initFrame()
+		IWatchSpecification watchSpecification = ResourceLoader.parseSpecification(ResourceLoader.resourceMap)
+		initFrame(watchSpecification.dimension)
 		paintingCanvas = new SwingPaintingCanvas(frame, frame.width, frame.height)
-		paintingCanvas.addLayers(ResourceLoader.load(ResourceLoader.@resourceMap))
-		paintingCanvas.updateLayers(true)
-		paintingCanvas.paintLayers()
+		paintingCanvas.addScreens(watchSpecification.screens)
+		paintingCanvas.updateScreens(true)
+		paintingCanvas.paint()
 		paintingCanvas.show()
 		this.tickTimer = scheduleTickAndRepaint()
 	}
 
-	void initFrame() {
+	void initFrame(Dimension dimension = new Dimension(INITIAL_DIMENSIONS.width as int, INITIAL_DIMENSIONS.height as int)) {
 		frame = new JFrame() {
 			@Override
 			void paint(Graphics g) {
 				super.paint(g)
-				paintingCanvas.paintLayers()
+				paintingCanvas.paint()
 			}
 		}
-		frame.bounds = new Rectangle(size: INITIAL_DIMENSIONS, location: INITIAL_LOCATION)
+		frame.setBounds(INITIAL_LOCATION.x, INITIAL_LOCATION.y, dimension.width, dimension.height)
 		frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
 	}
 
@@ -48,7 +50,7 @@ class SwingWindow implements Window {
 			@Override
 			void run() {
 				// if at least one layer was updated call to repaint
-				if (!paintingCanvas.updateLayers().empty) {
+				if (!paintingCanvas.updateScreens().empty) {
 					frame.repaint()
 				}
 			}

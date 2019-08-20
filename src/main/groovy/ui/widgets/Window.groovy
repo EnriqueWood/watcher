@@ -1,8 +1,8 @@
 package ui.widgets
 
+import drawing.Dimension
+
 import java.awt.Color
-import java.awt.Dimension
-import java.awt.Point
 
 interface Window {
 
@@ -10,9 +10,7 @@ interface Window {
 
 	static final Dimension INITIAL_DIMENSIONS = new Dimension(640, 800)
 
-	static final Point INITIAL_LOCATION = new Point(2, 200)
-
-	static final Color WINDOW_INITIAL_COLOR = Color.decode('#ff0000')
+	static final Location INITIAL_LOCATION = new Location(2, 200)
 
 	void show()
 

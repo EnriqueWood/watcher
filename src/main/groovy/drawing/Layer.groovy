@@ -1,18 +1,21 @@
 package drawing
 
-import java.awt.Dimension
+import java.awt.AlphaComposite
+import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 
 class Layer implements ILayer {
 	boolean visible
+	int opacity
 	BufferedImage image
 	List<Drawable> drawables
 	Dimension dimension
 
-	Layer(Dimension dimension, boolean visible = true, List<Drawable> drawables = []) {
+	Layer(Dimension dimension, boolean visible = true, int opacity = 100, List<Drawable> drawables = []) {
 		image = Helper.resetImage(dimension)
 		this.dimension = dimension
 		this.visible = visible
+		this.opacity = opacity
 		this.drawables = drawables
 	}
 
@@ -42,10 +45,12 @@ class Layer implements ILayer {
 		if (!visible) {
 			return
 		}
+		Graphics2D graphics = image.graphics as Graphics2D
+		graphics.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (opacity as float) / 100f as float)
 		drawables.each {
-			image.graphics.drawImage(it.image, it.location.x, it.location.y, null)
+			graphics.drawImage(it.image, it.location.x, it.location.y, null)
 		}
-		image.graphics.dispose()
+		graphics.dispose()
 	}
 
 	@Override

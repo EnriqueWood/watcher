@@ -3,10 +3,10 @@ package drawing
 /* Canvas containing a group layers which contains drawable elements */
 
 interface PaintingCanvas {
-	void addLayer(ILayer layer)
+	void addScreen(IScreen screen)
 
 	// Paints the content of every drawable in its respective layer
-	void paintLayers()
+	void paint()
 
 	//request a petition to be displayed
 	void show()
@@ -15,7 +15,7 @@ interface PaintingCanvas {
 	 	returns updated layers, if force is set true all layers get updated
 	 */
 
-	List<ILayer> updateLayers(boolean force)
+	List<IScreen> updateScreens(boolean force)
 
-	void addLayers(List<ILayer> layers)
+	void addScreens(List<IScreen> screens)
 }

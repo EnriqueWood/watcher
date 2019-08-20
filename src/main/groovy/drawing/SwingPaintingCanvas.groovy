@@ -2,7 +2,6 @@ package drawing
 
 import javax.swing.JPanel
 import java.awt.Container
-import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.Image
 
@@ -11,31 +10,29 @@ import java.awt.Image
 
 class SwingPaintingCanvas implements PaintingCanvas {
 	Dimension dimension
-	List<ILayer> layers
+	List<IScreen> screens
 	Image image
 	JPanel panel = new JPanel() {
 		@Override
 		void paint(Graphics graphics) {
-			layers.findAll { it.visible } each {
-				graphics.drawImage(it.image, 0, 0, null)
-			}
+			graphics.drawImage(screens.find { it.active }.image, 0, 0, null)
 		}
 	}
 
 	SwingPaintingCanvas(Container parent, int width, int height) {
 		dimension = new Dimension(width, height)
-		layers = []
-		panel.preferredSize = dimension
+		screens = []
+		panel.preferredSize.width = width
+		panel.preferredSize.height = height
 		parent.add(panel)
 	}
 
 	@Override
-	void paintLayers() {
+	void paint() {
 		image = Helper.resetImage(dimension)
-		layers.findAll { it.visible }.each {
-			it.draw()
-			image.graphics.drawImage(it.image, 0, 0, null)
-		}
+		IScreen activeScreen = screens.find { it.active }
+		activeScreen.draw()
+		image.graphics.drawImage(activeScreen.image, 0, 0, null)
 	}
 
 	@Override
@@ -44,17 +41,17 @@ class SwingPaintingCanvas implements PaintingCanvas {
 	}
 
 	@Override
-	List<ILayer> updateLayers(boolean force = false) {
-		layers.findAll { it.updateElements(force) > 0 }
+	List<IScreen> updateScreens(boolean force = false) {
+		screens.findAll { it.updateElements(force) > 0 }
 	}
 
 	@Override
-	void addLayer(ILayer layer) {
-		layers.add(layer)
+	void addScreen(IScreen screen) {
+		this.screens.add(screen)
 	}
 
 	@Override
-	void addLayers(List<ILayer> layers) {
-		this.layers.addAll(layers)
+	void addScreens(List<IScreen> screens) {
+		this.screens.addAll(screens)
 	}
 }

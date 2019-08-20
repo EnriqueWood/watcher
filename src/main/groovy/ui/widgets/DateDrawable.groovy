@@ -11,14 +11,17 @@ class DateDrawable implements Drawable {
 	Font font
 	Location location
 	String hexColor
+	String timeZone
 	boolean valid
 
-	DateDrawable(String dateFormat, String textColor = '#000000', Font font = new Font('Lucida', Font.PLAIN, 50), Location location = new Location()) {
+	DateDrawable(String dateFormat, String timeZone = "UTC", String textColor = '#000000', Font font = new Font('Lucida', Font.PLAIN, 50), Location location = new Location()) {
 		this.font = font
 		this.location = location
 		this.hexColor = textColor
 		this.dateFormat = dateFormat
+		this.timeZone = timeZone
 		textDrawable = new TextDrawable(time, textColor, font, location)
+		//TODO: hacer que cada drawable se suscriba a un ticker desde fuera
 		TimerTask timerTask = new TimerTask() {
 			@Override
 			void run() {
@@ -33,7 +36,7 @@ class DateDrawable implements Drawable {
 	}
 
 	protected String getTime() {
-		new Date().format(dateFormat)
+		new Date().format(dateFormat, SimpleTimeZone.getTimeZone(timeZone))
 	}
 
 	@Override
