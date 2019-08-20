@@ -1,7 +1,6 @@
 package drawing
 
 import javax.swing.JPanel
-import java.awt.Color
 import java.awt.Container
 import java.awt.Graphics
 import java.awt.Image

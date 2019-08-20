@@ -7,7 +7,6 @@ import drawing.SwingPaintingCanvas
 import toolkit.ResourceLoader
 
 import javax.swing.JFrame
-import java.awt.Color
 import java.awt.Graphics
 
 class SwingWindow implements Window {
@@ -17,8 +16,8 @@ class SwingWindow implements Window {
 	PaintingCanvas paintingCanvas
 	Timer tickTimer
 
-	SwingWindow() {
-		IWatchSpecification watchSpecification = ResourceLoader.parseSpecification(ResourceLoader.resourceMap)
+	SwingWindow(String speficationFolderPath) {
+		IWatchSpecification watchSpecification = ResourceLoader.parseSpecification(speficationFolderPath)
 		initFrame(watchSpecification.dimension)
 		paintingCanvas = new SwingPaintingCanvas(frame, frame.width, frame.height)
 		paintingCanvas.addScreens(watchSpecification.screens)

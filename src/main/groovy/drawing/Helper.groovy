@@ -1,5 +1,7 @@
 package drawing
 
+import groovy.json.JsonSlurper
+
 import java.awt.Font
 import java.awt.FontMetrics
 import java.awt.Graphics2D
@@ -14,5 +16,9 @@ class Helper {
 		Graphics2D graphics2D = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB).createGraphics()
 		graphics2D.font = font
 		graphics2D.fontMetrics
+	}
+
+	static Map parseJson(String path) {
+		new JsonSlurper().parse(new File(path)) as Map
 	}
 }

@@ -2,6 +2,7 @@ package toolkit
 
 import drawing.Dimension
 import drawing.Drawable
+import drawing.Helper
 import drawing.ILayer
 import drawing.IScreen
 import drawing.IWatchSpecification
@@ -19,107 +20,16 @@ import java.awt.GraphicsEnvironment
 import java.awt.image.BufferedImage
 
 class ResourceLoader {
-	//TODO: improve resource loading
-	static final Map resourceMap = [
-			dimension: [
-					width : 483,
-					height: 697,
-			],
-			assets   : [
-					[name: 'watch-skin', type: 'image', path: './assets/watch-skin.png'],
-					[name: 'time-font', type: 'font', path: './assets/font.ttf'],
-			],
-			screens  : [
-					[active: true,
-					 layers: [
-							 [visible  : true,
-							  opacity  : 100,
-							  drawables: [
-									  [type     : 'image',
-									   image    : 'watch-skin',
-									   locationX: 0,
-									   locationY: 0,
-									  ],
-									  [type     : 'text',
-									   locationX: 145,
-									   locationY: 360,
-									   text     : '88:88',
-									   font     : 'time-font',
-									   textColor: '#bbbbbc',
-									   fontSize : 80f
-									  ],
-									  [type     : 'text',
-									   locationX: 310,
-									   locationY: 378,
-									   text     : '88',
-									   font     : 'time-font',
-									   textColor: '#bbbbbc',
-									   fontSize : 56f
-									  ],
-									  [type     : 'text',
-									   text     : 'SA',
-									   font     : 'time-font',
-									   textColor: '#bbbbbc',
-									   fontSize : 42f,
-									   locationX: 220,
-									   locationY: 320,
-									  ],
-									  [type     : 'text',
-									   text     : '88',
-									   font     : 'time-font',
-									   fontSize : 42f,
-									   textColor: '#bbbbbc',
-									   locationX: 320,
-									   locationY: 320,
-									  ],
-									  [type      : 'date',
-									   font      : 'time-font',
-									   fontSize  : 42f,
-									   dateFormat: 'dd',
-									   timeZone  : 'America/Santiago',
-									   textColor : '#000000',
-									   locationX : 320,
-									   locationY : 320,
-									  ],
-									  [type      : 'date',
-									   font      : 'time-font',
-									   fontSize  : 80f,
-									   dateFormat: 'HH',
-									   timeZone  : 'America/Santiago',
-									   textColor : '#000000',
-									   locationX : 145,
-									   locationY : 360,
-									  ],
-									  [type      : 'date',
-									   font      : 'time-font',
-									   fontSize  : 80f,
-									   dateFormat: ':mm',
-									   timeZone  : 'America/Santiago',
-									   textColor : '#000000',
-									   locationX : 215,
-									   locationY : 360,
-									  ],
-									  [type      : 'date',
-									   font      : 'time-font',
-									   fontSize  : 56f,
-									   locationX : 310,
-									   locationY : 378,
-									   dateFormat: 'ss',
-									   timeZone  : 'America/Santiago',
-									   textColor : '#000000',
-									  ],
-							  ]
-							 ]
-					 ]
-					]
-			]
-	]
 
-	static IWatchSpecification parseSpecification(Map resourceMap) {
-		Dimension dimension = parseDimension(resourceMap.dimension as Map<String, Integer>)
+	static final String SPECIFICATION_FILENAME = 'specification.json'
+
+	static IWatchSpecification parseSpecification(String specificationFolderPath) {
+		Map specification = Helper.parseJson("${specificationFolderPath}${File.separator}${SPECIFICATION_FILENAME}")
+
 		ResourceBox resourceBox = new ResourceBox()
-		resourceBox.addAllAssets(resourceMap.assets.collect { loadAsset(it as Map) })
-		List<IScreen> screens = resourceMap.screens.collect {
+		Dimension dimension = parseDimension(specification.dimension as Map<String, Integer>)
+		resourceBox.addAllAssets(specification.assets.collect { loadAsset(specificationFolderPath, it as Map) })
+		List<IScreen> screens = specification.screens.collect {
 			parseScreen(it as Map, dimension, resourceBox)
 		}
 		new WatchSpecification(dimension, screens)
@@ -129,13 +39,14 @@ class ResourceLoader {
 		new Dimension(dimensionSpecification.width, dimensionSpecification.height)
 	}
 
-	static Asset loadAsset(Map assetsSpecification) {
+	static Asset loadAsset(String basePath, Map assetsSpecification) {
+		String assetPath = "${basePath}${File.separator}${assetsSpecification.path}"
 		switch (assetsSpecification.type) {
 			case 'image':
-				return new Asset<BufferedImage>(assetsSpecification.name as String, loadImage(assetsSpecification.path as String))
+				return new Asset<BufferedImage>(assetsSpecification.name as String, loadImage(assetPath))
 				break
 			case 'font':
-				return new Asset<Font>(assetsSpecification.name as String, loadFont(assetsSpecification.path as String))
+				return new Asset<Font>(assetsSpecification.name as String, loadFont(assetPath))
 				break
 			default:
 				throw new IllegalArgumentException("Type ${assetsSpecification.type} is not a known resource type")
