@@ -2,8 +2,6 @@ package ui.widgets
 
 import drawing.Dimension
 
-import java.awt.Color
-
 interface Window {
 
 	static final String WINDOW_TITLE = 'Watcher 0.1'

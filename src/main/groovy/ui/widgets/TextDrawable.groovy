@@ -20,11 +20,11 @@ class TextDrawable implements Drawable {
 	String hexColor
 	Font font
 
-	TextDrawable(String text, String hexColor = '#000000', Font font = new Font('Arial', Font.PLAIN, 50), Location location = new Location()) {
+	TextDrawable(Font font, String text, String hexColor = '#000000', Location location = new Location()) {
 		this.text = text
 		this.hexColor = hexColor
-		this.font = font
 		this.location = location
+		this.font = font ?: new Font('Arial', Font.PLAIN, 50)
 	}
 
 	@Override

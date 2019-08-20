@@ -4,7 +4,7 @@ import ui.widgets.Location
 
 import java.awt.Image
 
-interface Drawable extends Updateable {
+interface Drawable extends Updatable {
 
 	Location getLocation()
 

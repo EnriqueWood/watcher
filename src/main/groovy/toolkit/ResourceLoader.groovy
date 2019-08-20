@@ -116,7 +116,7 @@ class ResourceLoader {
 	]
 
 	static IWatchSpecification parseSpecification(Map resourceMap) {
-		Dimension dimension = parseDimension(resourceMap)
+		Dimension dimension = parseDimension(resourceMap.dimension as Map<String, Integer>)
 		ResourceBox resourceBox = new ResourceBox()
 		resourceBox.addAllAssets(resourceMap.assets.collect { loadAsset(it as Map) })
 		List<IScreen> screens = resourceMap.screens.collect {
@@ -125,8 +125,8 @@ class ResourceLoader {
 		new WatchSpecification(dimension, screens)
 	}
 
-	protected static Dimension parseDimension(Map resourceMap) {
-		new Dimension(resourceMap.dimension.width as int, resourceMap.dimension.height as int)
+	protected static Dimension parseDimension(Map<String, Integer> dimensionSpecification) {
+		new Dimension(dimensionSpecification.width, dimensionSpecification.height)
 	}
 
 	static Asset loadAsset(Map assetsSpecification) {
@@ -158,9 +158,9 @@ class ResourceLoader {
 		Location location = new Location(drawableSpecification.locationX as int, drawableSpecification.locationY as int)
 		switch (drawableSpecification.type) {
 			case 'text':
-				return new TextDrawable(drawableSpecification.text as String,
-						drawableSpecification.textColor as String,
-						resourceBox.getFont(drawableSpecification.font as String, drawableSpecification.fontSize as float),
+				return new TextDrawable(resourceBox.getFont(drawableSpecification.font as String, drawableSpecification.fontSize as float), drawableSpecification.text as String,
+						drawableSpecification.textColor as String
+						,
 						location)
 				break
 			case 'image':
@@ -183,14 +183,13 @@ class ResourceLoader {
 	}
 
 	static Font loadFont(String path) {
-		Font customFont = null
 		try {
-			customFont = Font.createFont(Font.TRUETYPE_FONT, new File(path))
+			Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File(path))
 			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(customFont)
-		} catch (FontFormatException e) {
-			e.printStackTrace()
+			customFont
+		} catch (FontFormatException formatException) {
+			throw new IllegalArgumentException("Cannot load font in <${path}>", formatException)
 		}
-		customFont
 	}
 }
 

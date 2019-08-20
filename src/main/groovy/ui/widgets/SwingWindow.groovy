@@ -7,6 +7,7 @@ import drawing.SwingPaintingCanvas
 import toolkit.ResourceLoader
 
 import javax.swing.JFrame
+import java.awt.Color
 import java.awt.Graphics
 
 class SwingWindow implements Window {
@@ -35,13 +36,15 @@ class SwingWindow implements Window {
 				paintingCanvas.paint()
 			}
 		}
+		frame.title = WINDOW_TITLE
 		frame.setBounds(INITIAL_LOCATION.x, INITIAL_LOCATION.y, dimension.width, dimension.height)
 		frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
 	}
 
 	protected Timer scheduleTickAndRepaint() {
-		new Timer('tickAndRepaint', true)
-				.scheduleAtFixedRate(tickAndRepaintTask(), TICK_PERDIOD_IN_MILLIS, TICK_PERDIOD_IN_MILLIS)
+		Timer timer = new Timer('tickAndRepaint', true)
+		timer.scheduleAtFixedRate(tickAndRepaintTask(), TICK_PERDIOD_IN_MILLIS, TICK_PERDIOD_IN_MILLIS)
+		timer
 	}
 
 	protected TimerTask tickAndRepaintTask() {

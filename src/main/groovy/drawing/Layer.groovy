@@ -55,8 +55,8 @@ class Layer implements ILayer {
 
 	@Override
 	int updateElements(boolean force = false) {
-		List<Updateable> updateables = drawables.findAll { force || it.shouldUpdate() } as List<Updateable>
-		updateables*.update()
-		updateables.size()
+		List<Updatable> updatables = drawables.findAll { force || it.shouldUpdate() } as List<Updatable>
+		updatables*.update()
+		updatables.size()
 	}
 }

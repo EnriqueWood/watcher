@@ -40,6 +40,6 @@ class Screen implements IScreen {
 
 	@Override
 	int updateElements(boolean force) {
-		layers.collect { it.updateElements(force) }.sum()
+		layers.collect { it.updateElements(force) }.sum() as int
 	}
 }

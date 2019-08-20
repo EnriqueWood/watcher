@@ -6,22 +6,20 @@ import java.awt.Font
 import java.awt.Image
 
 class DateDrawable implements Drawable {
-	String dateFormat
-	TextDrawable textDrawable
-	Font font
-	Location location
-	String hexColor
-	String timeZone
-	boolean valid
 
-	DateDrawable(String dateFormat, String timeZone = "UTC", String textColor = '#000000', Font font = new Font('Lucida', Font.PLAIN, 50), Location location = new Location()) {
-		this.font = font
-		this.location = location
-		this.hexColor = textColor
+	static final DEFAULT_FONT = new Font('Arial', Font.PLAIN, 50)
+
+	boolean valid
+	String dateFormat
+	String timeZone
+	TextDrawable textDrawable
+
+	DateDrawable(String dateFormat, String timeZone = "UTC", String textColor = '#000000', Font font, Location location) {
 		this.dateFormat = dateFormat
 		this.timeZone = timeZone
-		textDrawable = new TextDrawable(time, textColor, font, location)
-		//TODO: hacer que cada drawable se suscriba a un ticker desde fuera
+		this.textDrawable = new TextDrawable(font ?: DEFAULT_FONT, time, textColor, location ?: new Location(0, 0))
+
+		//TODO: Make updatable drawables subscribe to external timer
 		TimerTask timerTask = new TimerTask() {
 			@Override
 			void run() {
