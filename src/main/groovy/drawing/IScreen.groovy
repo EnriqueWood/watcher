@@ -1,8 +1,10 @@
 package drawing
 
+import state.IStateManaged
+
 import java.awt.Image
 
-interface IScreen {
+interface IScreen extends IStateManaged {
 
 	boolean isActive()
 

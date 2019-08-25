@@ -1,7 +1,8 @@
-package drawing
+package toolkit
 
+import drawing.Dimension
 import groovy.json.JsonSlurper
-import ui.widgets.Window
+import drawing.IWindow
 
 import javax.swing.JFileChooser
 import java.awt.Container
@@ -33,10 +34,10 @@ class Helper {
 		if (widgetFoldersInDefaultFolder.size() == 1) {
 			return widgetFoldersInDefaultFolder.first()
 		}
-		pickFolder(null, Window.DEFAULT_WIDGETS_FOLDER)
+		pickFolder(null, IWindow.DEFAULT_WIDGETS_FOLDER)
 	}
 
-	static File pickFolder(Container parent = null, File initialFolder = Window.DEFAULT_INITIAL_FOLDER) {
+	static File pickFolder(Container parent = null, File initialFolder = IWindow.DEFAULT_INITIAL_FOLDER) {
 		JFileChooser chooser = new JFileChooser(initialFolder)
 		chooser.setVisible(true)
 		chooser.multiSelectionEnabled = false
@@ -46,7 +47,7 @@ class Helper {
 	}
 
 	static List<File> getWidgetFoldersInDefaultFolder() {
-		List<File> directories = Window.DEFAULT_WIDGETS_FOLDER.listFiles().findAll { it.directory }
+		List<File> directories = IWindow.DEFAULT_WIDGETS_FOLDER.listFiles().findAll { it.directory }
 		directories.empty ? [] : directories
 	}
 }

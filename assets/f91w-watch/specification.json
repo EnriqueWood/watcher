@@ -1,109 +1,133 @@
 {
-  "dimension":{
-    "width":483,
-    "height":697
+  "dimension": {
+    "width": 483,
+    "height": 697
   },
-  "assets":[
+  "assets": [
     {
-      "name":"watch-skin",
-      "type":"image",
-      "path":"skin.png"
+      "name": "watch-skin",
+      "type": "image",
+      "path": "skin.png"
     },
     {
-      "name":"time-font",
-      "type":"font",
-      "path":"font.ttf"
+      "name": "time-font",
+      "type": "font",
+      "path": "font.ttf"
     }
   ],
-  "screens":[
+  "screens": [
     {
-      "active":true,
-      "layers":[
+      "active": true,
+      "layers": [
         {
-          "visible":true,
-          "opacity":100,
-          "drawables":[
+          "visible": true,
+          "opacity": 100,
+          "drawables": [
             {
-              "type":"image",
-              "image":"watch-skin",
-              "locationX":0,
-              "locationY":0
+              "type": "image",
+              "image": "watch-skin",
+              "location": {
+                "x": 0,
+                "y": 0
+              }
             },
             {
-              "type":"text",
-              "locationX":145,
-              "locationY":360,
-              "text":"88:88",
-              "font":"time-font",
-              "textColor":"#bbbbbc",
-              "fontSize":80.0
+              "type": "text",
+              "text": "88:88",
+              "font": "time-font",
+              "textColor": "#bbbbbc",
+              "fontSize": 80.0,
+              "location": {
+                "x": 145,
+                "y": 360
+              }
             },
             {
-              "type":"text",
-              "locationX":310,
-              "locationY":378,
-              "text":"88",
-              "font":"time-font",
-              "textColor":"#bbbbbc",
-              "fontSize":56.0
+              "type": "text",
+              "text": "88",
+              "font": "time-font",
+              "textColor": "#bbbbbc",
+              "fontSize": 56.0,
+              "location": {
+                "x": 310,
+                "y": 378
+              }
             },
             {
-              "type":"text",
-              "text":"SA",
-              "font":"time-font",
-              "textColor":"#bbbbbc",
-              "fontSize":42.0,
-              "locationX":220,
-              "locationY":320
+              "type": "text",
+              "text": "SA",
+              "font": "time-font",
+              "textColor": "#bbbbbc",
+              "fontSize": 42.0,
+              "location": {
+                "x": 220,
+                "y": 330
+              }
             },
             {
-              "type":"text",
-              "text":"88",
-              "font":"time-font",
-              "fontSize":42.0,
-              "textColor":"#bbbbbc",
-              "locationX":320,
-              "locationY":320
+              "type": "text",
+              "text": "88",
+              "font": "time-font",
+              "fontSize": 42.0,
+              "textColor": "#bbbbbc",
+              "location": {
+                "x": 320,
+                "y": 320
+              }
+            }
+          ]
+        },
+        {
+          "visible": true,
+          "opacity": 100,
+          "drawables": [
+            {
+              "type": "date",
+              "font": "time-font",
+              "fontSize": 42.0,
+              "dateFormat": "dd",
+              "timeZone": "America/Santiago",
+              "textColor": "#000000",
+              "location": {
+                "x": 320,
+                "y": 320
+              }
             },
             {
-              "type":"date",
-              "font":"time-font",
-              "fontSize":42.0,
-              "dateFormat":"dd",
-              "timeZone":"America/Santiago",
-              "textColor":"#000000",
-              "locationX":320,
-              "locationY":320
+              "type": "date",
+              "font": "time-font",
+              "fontSize": 80.0,
+              "dateFormat": "HH",
+              "timeZone": "America/Santiago",
+              "textColor": "#000000",
+              "location": {
+                "x": 145,
+                "y": 360
+              }
             },
             {
-              "type":"date",
-              "font":"time-font",
-              "fontSize":80.0,
-              "dateFormat":"HH",
-              "timeZone":"America/Santiago",
-              "textColor":"#000000",
-              "locationX":145,
-              "locationY":360
+              "type": "date",
+              "font": "time-font",
+              "fontSize": 80.0,
+              "dateFormat": ":mm",
+              "timeZone": "America/Santiago",
+              "textColor": "#000000",
+              "location": {
+                "x": 215,
+                "y": 360
+              }
             },
             {
-              "type":"date",
-              "font":"time-font",
-              "fontSize":80.0,
-              "dateFormat":":mm",
-              "timeZone":"America/Santiago",
-              "textColor":"#000000",
-              "locationX":215,
-              "locationY":360
-            },
-            {
-              "type":"date",
-              "font":"time-font",
-              "fontSize":56.0,
-              "locationX":310,
-              "locationY":378,
-              "dateFormat":"ss",
-              "timeZone":"America/Santiago",
-              "textColor":"#000000"
+              "type": "date",
+              "font": "time-font",
+              "fontSize": 56.0,
+              "dateFormat": "ss",
+              "timeZone": "America/Santiago",
+              "textColor": "#000000",
+              "location": {
+                "x": 310,
+                "y": 378
+              }
             }
           ]
         }

@@ -1,5 +1,7 @@
 package drawing
 
+import toolkit.Helper
+
 import javax.swing.JPanel
 import java.awt.Container
 import java.awt.Graphics
@@ -8,7 +10,7 @@ import java.awt.Image
 /* Usage: Create a painting canvas, make some painting */
 /* in each layer and when it's ready call show method  */
 
-class SwingPaintingCanvas implements PaintingCanvas {
+class SwingPaintingCanvas implements IPaintingCanvas {
 	Dimension dimension
 	List<IScreen> screens
 	Image image

@@ -1,16 +1,16 @@
 package toolkit
 
 import drawing.Dimension
-import drawing.Drawable
-import drawing.Helper
+import drawing.IDrawable
+import drawing.IAsset
 import drawing.ILayer
 import drawing.IScreen
 import drawing.IWatchSpecification
-import drawing.Layer
+import ui.widgets.Layer
 import drawing.Screen
 import ui.widgets.DateDrawable
 import ui.widgets.ImageDrawable
-import ui.widgets.Location
+import drawing.Location
 import ui.widgets.TextDrawable
 
 import javax.imageio.ImageIO
@@ -19,7 +19,7 @@ import java.awt.FontFormatException
 import java.awt.GraphicsEnvironment
 import java.awt.image.BufferedImage
 
-class ResourceLoader {
+class ResourceManager {
 
 	static final String SPECIFICATION_FILENAME = 'specification.json'
 
@@ -32,21 +32,25 @@ class ResourceLoader {
 		List<IScreen> screens = specification.screens.collect {
 			parseScreen(it as Map, dimension, resourceBox)
 		}
-		new WatchSpecification(dimension, screens)
+		new WatchSpecification(dimension, resourceBox.assetList, screens)
 	}
 
 	protected static Dimension parseDimension(Map<String, Integer> dimensionSpecification) {
 		new Dimension(dimensionSpecification.width, dimensionSpecification.height)
 	}
 
-	static Asset loadAsset(String basePath, Map assetsSpecification) {
+	protected static Location parseLocation(Map<String, Integer> locationSpecification) {
+		new Location(locationSpecification.x, locationSpecification.y)
+	}
+
+	static IAsset loadAsset(String basePath, Map assetsSpecification) {
 		String assetPath = "${basePath}${File.separator}${assetsSpecification.path}"
 		switch (assetsSpecification.type) {
 			case 'image':
-				return new Asset<BufferedImage>(assetsSpecification.name as String, loadImage(assetPath))
+				return new Asset<BufferedImage>(assetsSpecification.name as String, assetsSpecification.type as String, assetsSpecification.path as String, loadImage(assetPath))
 				break
 			case 'font':
-				return new Asset<Font>(assetsSpecification.name as String, loadFont(assetPath))
+				return new Asset<Font>(assetsSpecification.name as String, assetsSpecification.type as String, assetsSpecification.path as String, loadFont(assetPath))
 				break
 			default:
 				throw new IllegalArgumentException("Type ${assetsSpecification.type} is not a known resource type")
@@ -61,24 +65,26 @@ class ResourceLoader {
 
 	static ILayer parseLayer(Map<String, String> layerSpecification, Dimension layerDimension, ResourceBox resourceBox) {
 		ILayer layer = new Layer(layerDimension, layerSpecification.visible as boolean, layerSpecification.opacity as int)
-		layer.addDrawables(layerSpecification.drawables.collect { parseDrawable(it as Map, resourceBox) })
+		layer.addWidgets(layerSpecification.drawables.collect { parseDrawable(it as Map, resourceBox) })
 		layer
 	}
 
-	static Drawable parseDrawable(Map drawableSpecification, ResourceBox resourceBox) {
-		Location location = new Location(drawableSpecification.locationX as int, drawableSpecification.locationY as int)
+	static IDrawable parseDrawable(Map drawableSpecification, ResourceBox resourceBox) {
+		Location location = parseLocation(drawableSpecification.location as Map<String, Integer>)
 		switch (drawableSpecification.type) {
 			case 'text':
-				return new TextDrawable(resourceBox.getFont(drawableSpecification.font as String, drawableSpecification.fontSize as float), drawableSpecification.text as String,
-						drawableSpecification.textColor as String
-						,
+				new TextDrawable(drawableSpecification.font as String,
+						resourceBox.getFont(drawableSpecification.font as String, drawableSpecification.fontSize as float),
+						drawableSpecification.text as String,
+						drawableSpecification.textColor as String,
 						location)
 				break
 			case 'image':
-				return new ImageDrawable(resourceBox.getImage(drawableSpecification.image as String), location)
+				new ImageDrawable(drawableSpecification.image as String, resourceBox.getImage(drawableSpecification.image as String), location)
 				break
 			case 'date':
-				return new DateDrawable(drawableSpecification.dateFormat as String,
+				new DateDrawable(drawableSpecification.font as String,
+						drawableSpecification.dateFormat as String,
 						drawableSpecification.timeZone as String,
 						drawableSpecification.textColor as String,
 						resourceBox.getFont(drawableSpecification.font as String, drawableSpecification.fontSize as float),
@@ -90,7 +96,11 @@ class ResourceLoader {
 	}
 
 	static BufferedImage loadImage(String path) {
-		ImageIO.read(new File(path))
+		try {
+			ImageIO.read(new File(path))
+		} catch (IOException ioException) {
+			throw new IllegalArgumentException("Cannot load image in <${path}>", ioException)
+		}
 	}
 
 	static Font loadFont(String path) {

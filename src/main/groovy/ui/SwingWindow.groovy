@@ -1,22 +1,26 @@
-package ui.widgets
+package ui
 
 import drawing.Dimension
-import drawing.Helper
+import drawing.IPaintingCanvas
 import drawing.IWatchSpecification
-import drawing.PaintingCanvas
+import drawing.IWindow
 import drawing.SwingPaintingCanvas
-import toolkit.ResourceLoader
+import state.StateManager
+import toolkit.Helper
+import toolkit.ResourceManager
 
 import javax.swing.JFrame
 import java.awt.Graphics
 
-class SwingWindow implements Window {
+class SwingWindow implements IWindow {
 
 	public static final int TICK_PERIOD_IN_MILLIS = 100
 	JFrame frame
-	PaintingCanvas paintingCanvas
+	IPaintingCanvas paintingCanvas
 	Timer tickTimer
 	File widgetFolder
+	IWatchSpecification watchSpecification
+	private StateManager stateManager
 
 	SwingWindow() {
 		this.widgetFolder = Helper.widgetFolder
@@ -55,7 +59,7 @@ class SwingWindow implements Window {
 	}
 
 	void show() {
-		IWatchSpecification watchSpecification = ResourceLoader.parseSpecification(specificationFolderPath)
+		IWatchSpecification watchSpecification = ResourceManager.parseSpecification(specificationFolderPath)
 		initFrame(watchSpecification.dimension)
 		paintingCanvas = new SwingPaintingCanvas(frame, frame.width, frame.height)
 		paintingCanvas.addScreens(watchSpecification.screens)
@@ -64,6 +68,13 @@ class SwingWindow implements Window {
 		paintingCanvas.show()
 		this.tickTimer = scheduleTickAndRepaint()
 		frame.setVisible(true)
+		stateManager = new StateManager(watchSpecification)
+	}
+
+	void saveSpecificationFile(File file) {
+		FileWriter fileWriter = new FileWriter(file)
+		fileWriter.write(stateManager.getStateAsJsonString())
+		fileWriter.close()
 	}
 
 	@Override

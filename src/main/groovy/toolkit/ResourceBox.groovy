@@ -1,24 +1,26 @@
 package toolkit
 
+import drawing.IAsset
+
 import java.awt.Font
 import java.awt.image.BufferedImage
 
 class ResourceBox {
-	Map<String, Asset> assets
+	Map<String, IAsset> assets
 
 	ResourceBox() {
 		this.assets = [:]
 	}
 
-	void addResource(Asset resource) {
+	void addResource(IAsset resource) {
 		assets[resource.name] = resource
 	}
 
-	void addAllAssets(List<Asset> assets) {
+	void addAllAssets(List<IAsset> assets) {
 		assets.each { addResource(it) }
 	}
 
-	Asset getAsset(String name) {
+	IAsset getAsset(String name) {
 		assets[name]
 	}
 
@@ -28,5 +30,9 @@ class ResourceBox {
 
 	Font getFont(String name, float size = 12f) {
 		(assets[name].resource as Font).deriveFont(size)
+	}
+
+	List<IAsset> getAssetList() {
+		new ArrayList<IAsset>(assets.values())
 	}
 }

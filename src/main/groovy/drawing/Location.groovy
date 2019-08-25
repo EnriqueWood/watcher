@@ -4,22 +4,21 @@ import state.IStateChangedChecker
 import state.StateChangedCheckerImpl
 import state.IStateManaged
 
-class Dimension implements IStateManaged {
-	int width
-	int height
+class Location implements IStateManaged {
+	int x = 0
+	int y = 0
 
 	@Delegate
 	IStateChangedChecker stateChangedChecker
 
-	Dimension(int width, int height) {
-		this.width = width
-		this.height = height
+	Location(int x = 0, int y = 0) {
+		this.x = x
+		this.y = y
 		this.stateChangedChecker = new StateChangedCheckerImpl(this)
 	}
 
 	@Override
 	Map getStateProperties() {
-		[width : width,
-		 height: height]
+		[x: x, y: y]
 	}
 }

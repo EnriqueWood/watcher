@@ -1,11 +1,12 @@
 package ui.widgets
 
-import drawing.Drawable
+import drawing.Location
+import state.StateChangedCheckerImpl
 
 import java.awt.Font
 import java.awt.Image
 
-class DateDrawable implements Drawable {
+class DateDrawable implements IWidget {
 
 	static final DEFAULT_FONT = new Font('Arial', Font.PLAIN, 50)
 
@@ -14,11 +15,14 @@ class DateDrawable implements Drawable {
 	String timeZone
 	TextDrawable textDrawable
 
-	DateDrawable(String dateFormat, String timeZone = "UTC", String textColor = '#000000', Font font, Location location) {
+	@Delegate
+	StateChangedCheckerImpl stateChangedChecker
+
+	DateDrawable(String fontName, String dateFormat, String timeZone = "UTC", String textColor = '#000000', Font font, Location location) {
 		this.dateFormat = dateFormat
 		this.timeZone = timeZone
-		this.textDrawable = new TextDrawable(font ?: DEFAULT_FONT, time, textColor, location ?: new Location(0, 0))
-
+		this.textDrawable = new TextDrawable(fontName, font ?: DEFAULT_FONT, time, textColor, location ?: new Location(0, 0))
+		this.stateChangedChecker = new StateChangedCheckerImpl(this)
 		//TODO: Make updatable drawables subscribe to external timer
 		TimerTask timerTask = new TimerTask() {
 			@Override
@@ -48,16 +52,6 @@ class DateDrawable implements Drawable {
 	}
 
 	@Override
-	int getWidth() {
-		textDrawable.width
-	}
-
-	@Override
-	int getHeight() {
-		textDrawable.height
-	}
-
-	@Override
 	boolean shouldUpdate() {
 		!valid
 	}
@@ -67,5 +61,16 @@ class DateDrawable implements Drawable {
 		textDrawable.text = time
 		textDrawable.update()
 		valid = true
+	}
+
+	@Override
+	Map getStateProperties() {
+		["type"      : "date",
+		 "font"      : textDrawable.stateProperties.font,
+		 "fontSize"  : textDrawable.stateProperties.fontSize,
+		 "textColor" : textDrawable.stateProperties.textColor,
+		 "location"  : textDrawable.stateProperties.location,
+		 "dateFormat": dateFormat,
+		 "timeZone"  : timeZone]
 	}
 }

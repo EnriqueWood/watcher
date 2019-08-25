@@ -2,7 +2,7 @@ package drawing
 
 /* Canvas containing a group layers which contains drawable elements */
 
-interface PaintingCanvas {
+interface IPaintingCanvas {
 	void addScreen(IScreen screen)
 
 	// Paints the content of every drawable in its respective layer

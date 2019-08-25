@@ -1,6 +1,6 @@
 package drawing
 
-interface Updatable {
+interface IUpdatable {
 
 	boolean shouldUpdate()
 

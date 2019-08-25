@@ -1,8 +1,6 @@
-package ui.widgets
+package drawing
 
-import drawing.Dimension
-
-interface Window {
+interface IWindow {
 
 	String WINDOW_TITLE = 'Watcher 0.1'
 

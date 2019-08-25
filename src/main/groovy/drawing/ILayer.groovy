@@ -1,20 +1,23 @@
 package drawing
 
+import state.IStateManaged
+import ui.widgets.IWidget
+
 import java.awt.Image
 
-interface ILayer {
+interface ILayer extends IStateManaged {
 
 	boolean isVisible()
 
 	int getOpacity()
 
-	void addDrawable(Drawable drawable)
+	void addWidget(IWidget widget)
 
-	void addDrawables(List<Drawable> drawables)
+	void addWidgets(List<IWidget> widgets)
 
-	void removeDrawable(Drawable drawable)
+	void removeWidget(IWidget widgets)
 
-	void removeAllDrawables()
+	void removeAllWidgets()
 
 	Image getImage()
 

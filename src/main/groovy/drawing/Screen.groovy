@@ -1,5 +1,9 @@
 package drawing
 
+import state.IStateChangedChecker
+import state.StateChangedCheckerImpl
+import toolkit.Helper
+
 import java.awt.Graphics2D
 import java.awt.Image
 import java.awt.image.BufferedImage
@@ -12,10 +16,14 @@ class Screen implements IScreen {
 
 	Dimension dimension
 
+	@Delegate
+	IStateChangedChecker stateChangedChecker
+
 	Screen(Dimension dimension, boolean active) {
 		this.layers = []
 		this.dimension = dimension
 		this.active = active
+		this.stateChangedChecker = new StateChangedCheckerImpl(this)
 	}
 
 	@Override
@@ -41,5 +49,12 @@ class Screen implements IScreen {
 	@Override
 	int updateElements(boolean force) {
 		layers.collect { it.updateElements(force) }.sum() as int
+	}
+
+	@Override
+	Map getStateProperties() {
+		[active: active,
+		 layers: layers*.stateProperties
+		]
 	}
 }

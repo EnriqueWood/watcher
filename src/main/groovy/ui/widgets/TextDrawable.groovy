@@ -1,7 +1,8 @@
 package ui.widgets
 
-import drawing.Drawable
-import drawing.Helper
+import toolkit.Helper
+import drawing.Location
+import state.StateChangedCheckerImpl
 
 import java.awt.Color
 import java.awt.Dimension
@@ -11,8 +12,9 @@ import java.awt.Graphics2D
 import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 
-class TextDrawable implements Drawable {
+class TextDrawable implements IWidget {
 
+	String fontName
 	BufferedImage image
 	Location location
 	int width, height
@@ -20,11 +22,16 @@ class TextDrawable implements Drawable {
 	String hexColor
 	Font font
 
-	TextDrawable(Font font, String text, String hexColor = '#000000', Location location = new Location()) {
+	@Delegate
+	StateChangedCheckerImpl stateChangedChecker
+
+	TextDrawable(String fontName, Font font, String text, String hexColor = '#000000', Location location = new Location()) {
+		this.fontName = fontName
 		this.text = text
 		this.hexColor = hexColor
 		this.location = location
 		this.font = font ?: new Font('Arial', Font.PLAIN, 50)
+		this.stateChangedChecker = new StateChangedCheckerImpl(this)
 	}
 
 	@Override
@@ -57,5 +64,15 @@ class TextDrawable implements Drawable {
 		graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY)
 		graphics2D.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE)
 		graphics2D
+	}
+
+	@Override
+	Map getStateProperties() {
+		["type"     : "text",
+		 "text"     : text,
+		 "font"     : fontName,
+		 "fontSize" : font.size,
+		 "textColor": hexColor,
+		 "location" : location.stateProperties]
 	}
 }
