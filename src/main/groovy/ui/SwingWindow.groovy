@@ -2,28 +2,35 @@ package ui
 
 import drawing.Dimension
 import drawing.IPaintingCanvas
-import drawing.IWatchSpecification
+import drawing.IUpdatable
+import drawing.IWatch
 import drawing.IWindow
 import drawing.SwingPaintingCanvas
 import state.StateManager
-import toolkit.Helper
+import timing.Timer
+import toolkit.FileManager
 import toolkit.ResourceManager
 
 import javax.swing.JFrame
 import java.awt.Graphics
 
-class SwingWindow implements IWindow {
+class SwingWindow implements IWindow, IUpdatable {
 
 	public static final int TICK_PERIOD_IN_MILLIS = 100
+
 	JFrame frame
 	IPaintingCanvas paintingCanvas
-	Timer tickTimer
-	File widgetFolder
-	IWatchSpecification watchSpecification
-	private StateManager stateManager
+	IWatch watch
+	ResourceManager resourceManager
+	StateManager stateManager
+	Timer ticker
 
 	SwingWindow() {
-		this.widgetFolder = Helper.widgetFolder
+		resourceManager = new ResourceManager(FileManager.widgetFolder.path)
+		watch = resourceManager.parseSpecification()
+		stateManager = new StateManager(watch)
+		ticker = new Timer(TICK_PERIOD_IN_MILLIS)
+		ticker.updatables.add(this)
 	}
 
 	void initFrame(Dimension dimension = new Dimension(INITIAL_DIMENSIONS.width as int, INITIAL_DIMENSIONS.height as int)) {
@@ -39,47 +46,15 @@ class SwingWindow implements IWindow {
 		frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
 	}
 
-	protected Timer scheduleTickAndRepaint() {
-		Timer timer = new Timer('tickAndRepaint', true)
-		timer.scheduleAtFixedRate(tickAndRepaintTask(), TICK_PERIOD_IN_MILLIS, TICK_PERIOD_IN_MILLIS)
-		timer
-	}
-
-	protected TimerTask tickAndRepaintTask() {
-		new TimerTask() {
-			@SuppressWarnings("GroovyAssignabilityCheck")
-			@Override
-			void run() {
-				// if at least one layer was updated call to repaint
-				if (!paintingCanvas.updateScreens().empty) {
-					frame.repaint()
-				}
-			}
-		}
-	}
-
 	void show() {
-		IWatchSpecification watchSpecification = ResourceManager.parseSpecification(specificationFolderPath)
-		initFrame(watchSpecification.dimension)
+		initFrame(watch.dimension)
 		paintingCanvas = new SwingPaintingCanvas(frame, frame.width, frame.height)
-		paintingCanvas.addScreens(watchSpecification.screens)
-		paintingCanvas.updateScreens(true)
+		paintingCanvas.addScreens(watch.screens)
+		paintingCanvas.update(true)
 		paintingCanvas.paint()
 		paintingCanvas.show()
-		this.tickTimer = scheduleTickAndRepaint()
+		ticker.start()
 		frame.setVisible(true)
-		stateManager = new StateManager(watchSpecification)
-	}
-
-	void saveSpecificationFile(File file) {
-		FileWriter fileWriter = new FileWriter(file)
-		fileWriter.write(stateManager.getStateAsJsonString())
-		fileWriter.close()
-	}
-
-	@Override
-	String getSpecificationFolderPath() {
-		widgetFolder.path
 	}
 
 	void hide() {
@@ -87,7 +62,18 @@ class SwingWindow implements IWindow {
 	}
 
 	void close() {
-		tickTimer.cancel()
+		ticker.cancel()
 		frame.dispose()
+	}
+
+	@Override
+	boolean shouldUpdate() {
+		true
+	}
+
+	@Override
+	void update() {
+		paintingCanvas.update(false)
+		frame.repaint()
 	}
 }

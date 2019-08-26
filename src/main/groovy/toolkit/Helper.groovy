@@ -2,10 +2,7 @@ package toolkit
 
 import drawing.Dimension
 import groovy.json.JsonSlurper
-import drawing.IWindow
 
-import javax.swing.JFileChooser
-import java.awt.Container
 import java.awt.Font
 import java.awt.FontMetrics
 import java.awt.Graphics2D
@@ -24,30 +21,5 @@ class Helper {
 
 	static Map parseJson(String path) {
 		new JsonSlurper().parse(new File(path)) as Map
-	}
-
-	static File getWidgetFolder() {
-		List<File> widgetFoldersInDefaultFolder = widgetFoldersInDefaultFolder
-		if (widgetFoldersInDefaultFolder.empty) {
-			return pickFolder()
-		}
-		if (widgetFoldersInDefaultFolder.size() == 1) {
-			return widgetFoldersInDefaultFolder.first()
-		}
-		pickFolder(null, IWindow.DEFAULT_WIDGETS_FOLDER)
-	}
-
-	static File pickFolder(Container parent = null, File initialFolder = IWindow.DEFAULT_INITIAL_FOLDER) {
-		JFileChooser chooser = new JFileChooser(initialFolder)
-		chooser.setVisible(true)
-		chooser.multiSelectionEnabled = false
-		chooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
-		chooser.showOpenDialog(parent)
-		chooser.selectedFile
-	}
-
-	static List<File> getWidgetFoldersInDefaultFolder() {
-		List<File> directories = IWindow.DEFAULT_WIDGETS_FOLDER.listFiles().findAll { it.directory }
-		directories.empty ? [] : directories
 	}
 }

@@ -1,16 +1,16 @@
 package toolkit
 
 import drawing.Dimension
-import drawing.IDrawable
 import drawing.IAsset
 import drawing.ILayer
 import drawing.IScreen
-import drawing.IWatchSpecification
-import ui.widgets.Layer
+import drawing.IWatch
+import drawing.Location
 import drawing.Screen
 import ui.widgets.DateDrawable
+import ui.widgets.IWidget
 import ui.widgets.ImageDrawable
-import drawing.Location
+import ui.widgets.Layer
 import ui.widgets.TextDrawable
 
 import javax.imageio.ImageIO
@@ -22,8 +22,13 @@ import java.awt.image.BufferedImage
 class ResourceManager {
 
 	static final String SPECIFICATION_FILENAME = 'specification.json'
+	private String specificationFolderPath
 
-	static IWatchSpecification parseSpecification(String specificationFolderPath) {
+	ResourceManager(String specificationFolderPath) {
+		this.specificationFolderPath = specificationFolderPath
+	}
+
+	IWatch parseSpecification() {
 		Map specification = Helper.parseJson("${specificationFolderPath}${File.separator}${SPECIFICATION_FILENAME}")
 
 		ResourceBox resourceBox = new ResourceBox()
@@ -32,18 +37,18 @@ class ResourceManager {
 		List<IScreen> screens = specification.screens.collect {
 			parseScreen(it as Map, dimension, resourceBox)
 		}
-		new WatchSpecification(dimension, resourceBox.assetList, screens)
+		new Watch(dimension, resourceBox.assetList, screens)
 	}
 
-	protected static Dimension parseDimension(Map<String, Integer> dimensionSpecification) {
+	private static Dimension parseDimension(Map<String, Integer> dimensionSpecification) {
 		new Dimension(dimensionSpecification.width, dimensionSpecification.height)
 	}
 
-	protected static Location parseLocation(Map<String, Integer> locationSpecification) {
+	private static Location parseLocation(Map<String, Integer> locationSpecification) {
 		new Location(locationSpecification.x, locationSpecification.y)
 	}
 
-	static IAsset loadAsset(String basePath, Map assetsSpecification) {
+	private static IAsset loadAsset(String basePath, Map assetsSpecification) {
 		String assetPath = "${basePath}${File.separator}${assetsSpecification.path}"
 		switch (assetsSpecification.type) {
 			case 'image':
@@ -57,19 +62,19 @@ class ResourceManager {
 		}
 	}
 
-	static IScreen parseScreen(Map<String, String> screenSpecification, Dimension dimension, ResourceBox resourceBox) {
+	private static IScreen parseScreen(Map<String, String> screenSpecification, Dimension dimension, ResourceBox resourceBox) {
 		IScreen screen = new Screen(dimension, screenSpecification.active as boolean)
 		screen.addLayers(screenSpecification.layers.collect { parseLayer(it as Map, dimension, resourceBox) })
 		screen
 	}
 
-	static ILayer parseLayer(Map<String, String> layerSpecification, Dimension layerDimension, ResourceBox resourceBox) {
+	private static ILayer parseLayer(Map<String, String> layerSpecification, Dimension layerDimension, ResourceBox resourceBox) {
 		ILayer layer = new Layer(layerDimension, layerSpecification.visible as boolean, layerSpecification.opacity as int)
-		layer.addWidgets(layerSpecification.drawables.collect { parseDrawable(it as Map, resourceBox) })
+		layer.addWidgets(layerSpecification.drawables.collect { parseWidgets(it as Map, resourceBox) })
 		layer
 	}
 
-	static IDrawable parseDrawable(Map drawableSpecification, ResourceBox resourceBox) {
+	private static IWidget parseWidgets(Map drawableSpecification, ResourceBox resourceBox) {
 		Location location = parseLocation(drawableSpecification.location as Map<String, Integer>)
 		switch (drawableSpecification.type) {
 			case 'text':
@@ -95,7 +100,7 @@ class ResourceManager {
 		}
 	}
 
-	static BufferedImage loadImage(String path) {
+	private static BufferedImage loadImage(String path) {
 		try {
 			ImageIO.read(new File(path))
 		} catch (IOException ioException) {
@@ -103,7 +108,7 @@ class ResourceManager {
 		}
 	}
 
-	static Font loadFont(String path) {
+	private static Font loadFont(String path) {
 		try {
 			Font customFont = Font.createFont(Font.TRUETYPE_FONT, new File(path))
 			GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(customFont)

@@ -10,7 +10,6 @@ class DateDrawable implements IWidget {
 
 	static final DEFAULT_FONT = new Font('Arial', Font.PLAIN, 50)
 
-	boolean valid
 	String dateFormat
 	String timeZone
 	TextDrawable textDrawable
@@ -23,18 +22,6 @@ class DateDrawable implements IWidget {
 		this.timeZone = timeZone
 		this.textDrawable = new TextDrawable(fontName, font ?: DEFAULT_FONT, time, textColor, location ?: new Location(0, 0))
 		this.stateChangedChecker = new StateChangedCheckerImpl(this)
-		//TODO: Make updatable drawables subscribe to external timer
-		TimerTask timerTask = new TimerTask() {
-			@Override
-			void run() {
-				if (time != textDrawable.text) {
-					valid = false
-					println "DateDrawable - with format ${dateFormat} needs update..."
-				}
-			}
-		}
-		Timer timer = new Timer('dateUpdater', true)
-		timer.schedule(timerTask, 100, 100)
 	}
 
 	protected String getTime() {
@@ -53,14 +40,13 @@ class DateDrawable implements IWidget {
 
 	@Override
 	boolean shouldUpdate() {
-		!valid
+		time != textDrawable.text
 	}
 
 	@Override
 	void update() {
 		textDrawable.text = time
 		textDrawable.update()
-		valid = true
 	}
 
 	@Override

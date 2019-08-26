@@ -43,7 +43,7 @@ class SwingPaintingCanvas implements IPaintingCanvas {
 	}
 
 	@Override
-	List<IScreen> updateScreens(boolean force = false) {
+	List<IScreen> update(boolean force = false) {
 		screens.findAll { it.updateElements(force) > 0 }
 	}
 

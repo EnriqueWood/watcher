@@ -15,7 +15,7 @@ interface IPaintingCanvas {
 	 	returns updated layers, if force is set true all layers get updated
 	 */
 
-	List<IScreen> updateScreens(boolean force)
+	List<IScreen> update(boolean force)
 
 	void addScreens(List<IScreen> screens)
 }

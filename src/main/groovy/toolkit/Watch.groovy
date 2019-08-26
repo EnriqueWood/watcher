@@ -3,10 +3,10 @@ package toolkit
 import drawing.Dimension
 import drawing.IAsset
 import drawing.IScreen
-import drawing.IWatchSpecification
+import drawing.IWatch
 import state.StateChangedCheckerImpl
 
-class WatchSpecification implements IWatchSpecification {
+class Watch implements IWatch {
 	Dimension dimension
 	List<IAsset> assets
 	List<IScreen> screens
@@ -14,7 +14,7 @@ class WatchSpecification implements IWatchSpecification {
 	@Delegate
 	StateChangedCheckerImpl stateChangedChecker
 
-	WatchSpecification(Dimension dimension, List<IAsset> assets, List<IScreen> screens) {
+	Watch(Dimension dimension, List<IAsset> assets, List<IScreen> screens) {
 		this.dimension = dimension
 		this.assets = assets
 		this.screens = screens

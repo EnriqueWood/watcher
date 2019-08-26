@@ -21,7 +21,7 @@ class Layer implements ILayer {
 	@Delegate
 	StateChangedCheckerImpl stateChangedChecker
 
-	Layer(Dimension dimension, boolean visible = true, int opacity = 100, List<IDrawable> widgets = []) {
+	Layer(Dimension dimension, boolean visible = true, int opacity = 100, List<IWidget> widgets = []) {
 		image = Helper.resetImage(dimension)
 		this.dimension = dimension
 		this.visible = visible

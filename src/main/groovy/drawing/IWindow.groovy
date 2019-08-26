@@ -17,6 +17,4 @@ interface IWindow {
 	void hide()
 
 	void close()
-
-	String getSpecificationFolderPath()
 }

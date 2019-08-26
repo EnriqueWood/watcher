@@ -2,7 +2,7 @@ package drawing
 
 import state.IStateManaged
 
-interface IWatchSpecification extends IStateManaged {
+interface IWatch extends IStateManaged {
 	Dimension getDimension()
 
 	List<IAsset> getAssets()
